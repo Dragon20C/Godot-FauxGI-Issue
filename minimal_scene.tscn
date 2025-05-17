@@ -1,0 +1,97 @@
+[gd_scene load_steps=9 format=3 uid="uid://ck1mtdqxum1ph"]
+
+[ext_resource type="PackedScene" uid="uid://b3vmtf81ju271" path="res://O1S_FauxGI/faux_gi.tscn" id="1_6wnm2"]
+[ext_resource type="PackedScene" uid="uid://b51irex0d1lm" path="res://player/player.tscn" id="2_6wnm2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7jvig"]
+sky_top_color = Color(0.176471, 0.176471, 0.176471, 1)
+sky_horizon_color = Color(0.382324, 0.382324, 0.382324, 1)
+ground_bottom_color = Color(0.176471, 0.176471, 0.176471, 1)
+ground_horizon_color = Color(0.382324, 0.382324, 0.382324, 1)
+
+[sub_resource type="Sky" id="Sky_3jkr7"]
+sky_material = SubResource("ProceduralSkyMaterial_7jvig")
+
+[sub_resource type="Environment" id="Environment_6wnm2"]
+sky = SubResource("Sky_3jkr7")
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.819608, 0.427451, 1)
+ambient_light_energy = 0.0128512
+tonemap_mode = 4
+ssr_enabled = true
+fog_light_color = Color(0.309401, 0.337479, 0.381616, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7jvig"]
+albedo_color = Color(0.64, 0.2944, 0.2944, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hrxqs"]
+disable_ambient_light = true
+emission_enabled = true
+emission = Color(1, 0.819948, 0.425681, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_hrxqs"]
+size = Vector3(0.4, 0.1, 0.2)
+
+[node name="MinimalScene" type="Node3D"]
+
+[node name="FauxGI" parent="." node_paths=PackedStringArray("top_node", "environment_node") instance=ExtResource("1_6wnm2")]
+top_node = NodePath("..")
+environment_node = NodePath("../WorldEnvironment")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6wnm2")
+
+[node name="Entities" type="Node3D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("2_6wnm2")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -4)
+
+[node name="Scene" type="Node3D" parent="."]
+
+[node name="Room" type="CSGCombiner3D" parent="Scene"]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Scene/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+size = Vector3(5, 0.1, 15)
+material = SubResource("StandardMaterial3D_7jvig")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Scene/Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -2.5)
+size = Vector3(5, 0.1, 15)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Scene/Room"]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 2.44291, 2.50041, -2.5)
+size = Vector3(5, 0.1, 15)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Scene/Room"]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, -2.43992, 2.50041, -2.5)
+size = Vector3(5, 0.1, 15)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Scene/Room"]
+transform = Transform3D(0, -2.98023e-08, -1, 1, 0, 0, 0, -1, 2.98023e-08, 0.026896, 2.50041, -9.94147)
+size = Vector3(5, 0.1, 4.86914)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Scene/Room"]
+transform = Transform3D(0, -2.98023e-08, -1, 1, 0, 0, 0, -1, 2.98023e-08, 0.026896, 2.50041, 4.93047)
+size = Vector3(5, 0.1, 4.86914)
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Light" type="Node3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Lights/Light"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0495922, 0)
+material_override = SubResource("StandardMaterial3D_hrxqs")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_hrxqs")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Lights/Light"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.65, 0)
+light_color = Color(1, 0.819608, 0.427451, 1)
+light_energy = 1.5
+light_indirect_energy = 1.25
+shadow_enabled = true
+omni_range = 6.0
